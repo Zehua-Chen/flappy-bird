@@ -1,0 +1,15 @@
+{
+    "name": "FlappyBird.Movement",
+    "references": [
+        "GUID:d8b865cd4c18c442cb1815a05981add3"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
