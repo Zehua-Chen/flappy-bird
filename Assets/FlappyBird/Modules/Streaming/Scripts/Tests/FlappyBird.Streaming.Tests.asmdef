@@ -1,10 +1,9 @@
 {
-    "name": "FlappyBird.Movement.Tests",
+    "name": "FlappyBird.Streaming.Tests",
     "references": [
         "GUID:27619889b8ba8c24980f49ee34dbb44a",
         "GUID:0acc523941302664db1f4e527237feb3",
-        "GUID:49891416b79514fbe87920145c71ed55",
-        "GUID:d8b865cd4c18c442cb1815a05981add3"
+        "GUID:a3048a32108be4d94aa0375962770abc"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
@@ -13,7 +12,7 @@
     "precompiledReferences": [
         "nunit.framework.dll"
     ],
-    "autoReferenced": false,
+    "autoReferenced": true,
     "defineConstraints": [
         "UNITY_INCLUDE_TESTS"
     ],
