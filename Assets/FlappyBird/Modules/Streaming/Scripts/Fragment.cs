@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace FlappyBird.Streaming
 {
@@ -10,10 +11,5 @@ namespace FlappyBird.Streaming
         SpriteRenderer _background = null;
 
         public Bounds Bounds => _background.bounds;
-
-        private void Awake()
-        {
-            SceneLoader.Current.Add(this);
-        }
     }
 }

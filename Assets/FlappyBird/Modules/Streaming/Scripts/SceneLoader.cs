@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace FlappyBird.Streaming
 {
@@ -20,13 +22,49 @@ namespace FlappyBird.Streaming
             SceneLoader.Current = null;
         }
 
-        public void Add(Fragment fragment)
+        public void Dequeue()
         {
-            this.Add(fragment, new Vector3(-0.5f, 0.0f, 0.0f));
+            if (this.Fragments.Count > 0)
+            {
+                Fragment fragment = this.Fragments.Dequeue();
+                SceneManager.UnloadSceneAsync(fragment.gameObject.scene.buildIndex);
+            }
         }
 
-        public void Add(Fragment fragment, Vector3 offset)
+        public IEnumerator Enqueue(string sceneName)
         {
+            return this.Enqueue(sceneName, new Vector3(-0.5f, 0.0f, 0.0f));
+        }
+
+        public IEnumerator Enqueue(string sceneName, Vector3 offset)
+        {
+            AsyncOperation operation = SceneManager.LoadSceneAsync(sceneName, new LoadSceneParameters()
+            {
+                loadSceneMode = LoadSceneMode.Additive
+            });
+
+            yield return operation;
+
+            Scene scene = SceneManager.GetSceneByName(sceneName);
+            GameObject[] roots = scene.GetRootGameObjects();
+
+            Fragment fragment = null;
+
+            for (int i = 0; i < roots.Length; i++)
+            {
+                fragment = roots[i].GetComponent<Fragment>();
+
+                if (fragment != null)
+                {
+                    break;
+                }
+            }
+
+            if (fragment == null)
+            {
+                Debug.LogErrorFormat("{0} does not contain Fragment in root", sceneName);
+            }
+
             Vector3 position = fragment.transform.position;
 
             if (this.Fragments.Count > 0)

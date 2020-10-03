@@ -14,10 +14,15 @@ namespace FlappyBird.Streaming
 
         private IEnumerator Start()
         {
-            SceneManager.LoadScene("Fragment 0", LoadSceneMode.Additive);
+            yield return this.SceneLoader.Enqueue("Fragment 0");
             yield return new WaitForSeconds(1.0f);
 
-            SceneManager.LoadScene("Fragment 1", LoadSceneMode.Additive);
+            yield return this.SceneLoader.Enqueue("Fragment 1");
+        }
+
+        private void OnTriggerExit2D(Collider2D collision)
+        {
+            this.SceneLoader.Dequeue();
         }
     }
 }
