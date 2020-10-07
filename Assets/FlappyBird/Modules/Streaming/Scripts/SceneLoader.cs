@@ -10,7 +10,7 @@ namespace FlappyBird.Streaming
     {
         public static SceneLoader Current = null;
 
-        public Queue<Fragment> Fragments = new Queue<Fragment>();
+        private List<Fragment> _fragments = new List<Fragment>();
 
         private void Awake()
         {
@@ -24,9 +24,9 @@ namespace FlappyBird.Streaming
 
         public void Dequeue()
         {
-            if (this.Fragments.Count > 0)
+            if (_fragments.Count > 0)
             {
-                Fragment fragment = this.Fragments.Dequeue();
+                Fragment fragment = _fragments[0];
                 SceneManager.UnloadSceneAsync(fragment.gameObject.scene.buildIndex);
             }
         }
@@ -48,39 +48,49 @@ namespace FlappyBird.Streaming
             Scene scene = SceneManager.GetSceneByName(sceneName);
             GameObject[] roots = scene.GetRootGameObjects();
 
+            this.Enqueue(roots, offset);
+        }
+
+        public void Enqueue(GameObject[] roots, Vector3 offset)
+        {
             Fragment fragment = null;
 
             for (int i = 0; i < roots.Length; i++)
             {
-                fragment = roots[i].GetComponent<Fragment>();
+                var found = roots[i].GetComponent<Fragment>();
 
-                if (fragment != null)
+                if (found != null)
                 {
-                    break;
+                    fragment = found;
                 }
             }
 
             if (fragment == null)
             {
-                Debug.LogErrorFormat("{0} does not contain Fragment in root", sceneName);
+                Debug.LogError("Fragment component not found in roots");
+                return;
             }
 
-            Vector3 position = fragment.transform.position;
-
-            if (this.Fragments.Count > 0)
+            if (_fragments.Count > 0)
             {
-                Fragment previous = this.Fragments.Peek();
+                Fragment previous = _fragments[_fragments.Count - 1];
+                Vector3 previousPosition = previous.transform.position;
 
-                position = previous.transform.position;
+                for (int i = 0; i < roots.Length; i++)
+                {
+                    Vector3 position = roots[i].transform.position;
 
-                position.x += previous.Bounds.extents.x;
-                position.x += fragment.Bounds.extents.x;
+                    position.x = previousPosition.x;
+                    position.x += previous.Bounds.extents.x;
+                    position.x += fragment.Bounds.extents.x;
 
-                position += offset;
+                    position += offset;
+
+                    roots[i].transform.position = position; 
+                }
             }
 
-            fragment.transform.position = position;
-            this.Fragments.Enqueue(fragment);
+            _fragments.Add(fragment);
         }
     }
 }
