@@ -13,11 +13,7 @@ namespace FlappyBird.Streaming.Tests
         {
             var streamerObject = new GameObject();
             streamerObject.transform.position = new Vector3();
-
-            var sceneLoader = streamerObject.AddComponent<SceneLoader>();
             var streamer = streamerObject.AddComponent<Streamer>();
-
-            streamer.SceneLoader = sceneLoader;
         }
     }
 }

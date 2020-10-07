@@ -7,9 +7,7 @@ namespace FlappyBird.Streaming
 {
     public class Fragment : MonoBehaviour
     {
-        [SerializeField]
-        SpriteRenderer _background = null;
-
-        public Bounds Bounds => _background.bounds;
+        internal SpriteRenderer Background = null;
+        public Bounds Bounds => this.Background.bounds;
     }
 }

@@ -10,19 +10,19 @@ namespace FlappyBird.Streaming
         public int StreamingLayer = 10;
         public string[] Scenes = null;
 
-        public SceneLoader SceneLoader = null;
+        private SceneLoader _sceneLoader = new SceneLoader();
 
         private IEnumerator Start()
         {
-            yield return this.SceneLoader.Enqueue("Fragment 0");
+            yield return _sceneLoader.Enqueue("Fragment 0");
             yield return new WaitForSeconds(1.0f);
 
-            yield return this.SceneLoader.Enqueue("Fragment 1");
+            yield return _sceneLoader.Enqueue("Fragment 1");
         }
 
         private void OnTriggerExit2D(Collider2D collision)
         {
-            this.SceneLoader.Dequeue();
+            _sceneLoader.Dequeue();
         }
     }
 }

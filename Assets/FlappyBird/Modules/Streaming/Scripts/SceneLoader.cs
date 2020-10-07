@@ -1,41 +1,51 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace FlappyBird.Streaming
 {
-    public class SceneLoader : MonoBehaviour
+    /// <summary>
+    /// Scene Loader load scenes and positions them correctly
+    /// </summary>
+    internal class SceneLoader
     {
-        public static SceneLoader Current = null;
-
         private List<Fragment> _fragments = new List<Fragment>();
 
-        private void Awake()
-        {
-            SceneLoader.Current = this;
-        }
-
-        private void OnDestroy()
-        {
-            SceneLoader.Current = null;
-        }
-
+        /// <summary>
+        /// Remove the oldest scene
+        /// </summary>
         public void Dequeue()
         {
             if (_fragments.Count > 0)
             {
                 Fragment fragment = _fragments[0];
                 SceneManager.UnloadSceneAsync(fragment.gameObject.scene.buildIndex);
+
+                _fragments.RemoveAt(0);
             }
         }
 
+        /// <summary>
+        /// Load a new scene; if the loader has not loaded any scenes, the roots
+        /// of the old scene would not be offseted; otherwise, the new scene
+        /// would be placed following the previous scene with offset in between
+        /// </summary>
+        /// <param name="sceneName">name of the new scene</param>
+        /// <returns>An async operation</returns>
         public IEnumerator Enqueue(string sceneName)
         {
             return this.Enqueue(sceneName, new Vector3(-0.5f, 0.0f, 0.0f));
         }
 
+        /// <summary>
+        /// Load a new scene; if the loader has not loaded any scenes, the roots
+        /// of the old scene would not be offseted; otherwise, the new scene
+        /// would be placed following the previous scene with offset in between
+        /// </summary>
+        /// <param name="sceneName">name of the new scene</param>
+        /// <param name="offset">offet to applied to the new scene</param>
+        /// <returns></returns>
         public IEnumerator Enqueue(string sceneName, Vector3 offset)
         {
             AsyncOperation operation = SceneManager.LoadSceneAsync(sceneName, new LoadSceneParameters()
@@ -51,6 +61,13 @@ namespace FlappyBird.Streaming
             this.Enqueue(roots, offset);
         }
 
+        /// <summary>
+        /// Load a new scene; if the loader has not loaded any scenes, the roots
+        /// of the old scene would not be offseted; otherwise, the new scene
+        /// would be placed following the previous scene with offset in between
+        /// </summary>
+        /// <param name="roots">roots of the new scene</param>
+        /// <param name="offset">offset applied to the new scene</param>
         public void Enqueue(GameObject[] roots, Vector3 offset)
         {
             Fragment fragment = null;
