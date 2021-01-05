@@ -1,0 +1,7 @@
+{
+  "name": "com.flappybird.movement",
+  "version": "0.1.0",
+  "displayName": "FlappyBird.Movement",
+  "description": "Movement module of flappy bird",
+  "unity": "2020.2"
+}

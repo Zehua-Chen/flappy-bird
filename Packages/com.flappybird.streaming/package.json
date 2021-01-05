@@ -1,0 +1,10 @@
+{
+  "name": "com.flappybird.streaming",
+  "version": "0.1.0",
+  "displayName": "FlappyBird.Streaming",
+  "description": "Scene Streaming module of flappy bird",
+  "unity": "2020.2",
+  "dependencies": {
+    "com.flappybird.values": "0.1.0"
+  }
+}

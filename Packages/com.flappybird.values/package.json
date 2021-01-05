@@ -1,0 +1,7 @@
+{
+  "name": "com.flappybird.values",
+  "version": "0.1.0",
+  "displayName": "FlappyBird.Values",
+  "description": "Values module of flappy bird",
+  "unity": "2020.2"
+}
