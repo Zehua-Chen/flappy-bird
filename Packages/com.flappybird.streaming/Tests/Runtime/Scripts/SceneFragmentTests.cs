@@ -20,6 +20,10 @@ public sealed class SceneFragmentTests
         }
     }
 
+    /// <summary>
+    /// Make sure roots of child scene/fragments are moved
+    /// </summary>
+    /// <returns></returns>
     [UnityTest]
     public IEnumerator MoveRoots()
     {
