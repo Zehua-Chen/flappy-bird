@@ -1,6 +1,6 @@
 {
     "name": "FlappyBird.Streaming",
-    "rootNamespace": "",
+    "rootNamespace": "FlappyBird.Streaming",
     "references": [
         "GUID:2db73898fb92a40deb6e0bacc355e52f"
     ],
