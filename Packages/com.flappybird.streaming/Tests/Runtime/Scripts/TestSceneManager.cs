@@ -8,14 +8,14 @@ using UnityEditor;
 
 public sealed class TestSceneManager : IPrebuildSetup, IPostBuildCleanup
 {
-    public const string PackagePath = "Packages/com.flappybird.streaming";
+    public readonly string PackagePath = Path.Combine("Packages", "com.flappybird.streaming");
 
-    public string[] ScenePaths = new string[]
+    public readonly string[] ScenePaths = new string[]
     {
-        "Tests/Runtime/Scenes/SceneStreamerTests/Root.unity",
-        "Tests/Runtime/Scenes/SceneStreamerTests/Fragment_0.unity",
-        "Tests/Runtime/Scenes/SceneStreamerTests/Fragment_1.unity",
-        "Tests/Runtime/Scenes/SceneStreamerTests/Fragment_2.unity"
+        Path.Combine("Tests", "Runtime", "Scenes", "SceneStreamerTests", "Root.unity"),
+        Path.Combine("Tests", "Runtime", "Scenes", "SceneStreamerTests", "Fragment_0.unity"),
+        Path.Combine("Tests", "Runtime", "Scenes", "SceneStreamerTests", "Fragment_1.unity"),
+        Path.Combine("Tests", "Runtime", "Scenes", "SceneStreamerTests", "Fragment_2.unity"),
     };
 
     public void Setup()
