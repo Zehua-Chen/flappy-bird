@@ -8,6 +8,7 @@ namespace FlappyBird.Streaming
     public sealed class SceneStream : ScriptableObject
     {
         public string[]? Scenes = default;
-        public Rect ViewSize = default;
+        public Rect View = default;
+        public float Speed = 1.5f;
     }
 }

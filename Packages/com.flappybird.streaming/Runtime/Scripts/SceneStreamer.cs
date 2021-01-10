@@ -42,7 +42,7 @@ namespace FlappyBird.Streaming
             }
 
             Gizmos.color = Color.yellow;
-            Gizmos.DrawWireCube(SceneStream.ViewSize.position, SceneStream.ViewSize.size);
+            Gizmos.DrawWireCube(SceneStream.View.position, SceneStream.View.size);
         }
 
         #region Scene Loading
@@ -185,7 +185,7 @@ namespace FlappyBird.Streaming
 
             SceneFragment fragment = _activeFragments.Peek();
             Rect fragmentRect = fragment.Rect;
-            Rect viewRect = SceneStream.ViewSize;
+            Rect viewRect = SceneStream.View;
 
             //Debug.LogFormat("Peeking {0}", fragment.gameObject.scene.name);
 

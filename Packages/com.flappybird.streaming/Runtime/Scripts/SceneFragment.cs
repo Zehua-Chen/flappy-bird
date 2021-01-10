@@ -6,6 +6,7 @@ namespace FlappyBird.Streaming
 {
     public sealed class SceneFragment : MonoBehaviour
     {
+        public SceneStream? Stream = default;
         public Vector2 Size = default;
         public Transform[]? Roots = default;
 
@@ -18,11 +19,10 @@ namespace FlappyBird.Streaming
             }
         }
 
-        public float Speed = 4.0f;
-
         private void Update()
         {
-            Vector3 delta = Vector3.left * Speed * Time.deltaTime;
+            float speed = Stream != null ? Stream.Speed : 0.0f;
+            Vector3 delta = Vector3.left * speed * Time.deltaTime;
 
             if (Roots != null)
             {
