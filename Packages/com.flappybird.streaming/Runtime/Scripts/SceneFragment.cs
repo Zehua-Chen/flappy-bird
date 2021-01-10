@@ -6,7 +6,6 @@ namespace FlappyBird.Streaming
 {
     public sealed class SceneFragment : MonoBehaviour
     {
-        public SceneStream? SceneStream = default;
         public Vector2 Size = default;
         public Transform[]? Roots = default;
 
@@ -20,11 +19,6 @@ namespace FlappyBird.Streaming
         }
 
         public float Speed = 4.0f;
-
-        private void Awake()
-        {
-            SceneStream?.AddActive(this);
-        }
 
         private void Update()
         {

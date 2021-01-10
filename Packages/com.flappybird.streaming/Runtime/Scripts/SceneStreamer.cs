@@ -1,5 +1,6 @@
 #nullable enable
-
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -11,11 +12,17 @@ namespace FlappyBird.Streaming
         public int NextScene = 0;
         public int BufferSize = 2;
 
-        private void Awake()
+        private Queue<SceneFragment> _activeFragments = new Queue<SceneFragment>();
+        private Queue<string> _activeFragmentScenes = new Queue<string>();
+
+        private IEnumerator Start()
         {
-            for (int i = 0; i < BufferSize; i++)
+            if (SceneStream != null && SceneStream.Scenes != null)
             {
-                LoadNextScene();
+                for (int i = 0; i < BufferSize && i < SceneStream.Scenes.Length; i++)
+                {
+                    yield return StartCoroutine(LoadNextScene());
+                }
             }
         }
 
@@ -23,7 +30,7 @@ namespace FlappyBird.Streaming
         {
             if (RemoveFirstInvisibleFragment())
             {
-                LoadNextScene();
+                StartCoroutine(LoadNextScene());
             }
         }
 
@@ -38,24 +45,121 @@ namespace FlappyBird.Streaming
             Gizmos.DrawWireCube(SceneStream.ViewSize.position, SceneStream.ViewSize.size);
         }
 
+        #region Scene Loading
+
         /// <summary>
         /// Load a scene by name and add the loaded name to <c>SceneStream.ActiveScenes</c>
         /// </summary>
-        /// <param name="scene">the name of the scene to load</param>
-        private void LoadScene(string scene)
+        /// <param name="sceneName">the name of the scene to load</param>
+        private IEnumerator LoadScene(string sceneName)
         {
             if (SceneStream == null)
             {
-                return;
+                yield break;
             }
             
-            AsyncOperation operation = SceneManager.LoadSceneAsync(scene, LoadSceneMode.Additive);
+            yield return SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
 
-            operation.completed += (operation) =>
+            Scene scene = SceneManager.GetSceneByName(sceneName);
+
+            SceneFragment? fragment = FindFragment(scene.GetRootGameObjects());
+
+            if (fragment != null)
             {
-                SceneStream.AddActive(scene);
-            };
+                AddActive(fragment);
+                AddActive(sceneName);
+            }
+            else
+            {
+                Debug.LogErrorFormat("Scene {0} does not have fragment", sceneName);
+            }
         }
+
+        /// <summary>
+        /// Load the next scene and increments <c>NextScene</c>
+        /// </summary>
+        private IEnumerator LoadNextScene()
+        {
+            if (SceneStream == null || SceneStream.Scenes == null)
+            {
+                yield break;
+            }
+
+            if (NextScene >= SceneStream.Scenes.Length)
+            {
+                yield break;
+            }
+
+            yield return StartCoroutine(LoadScene(SceneStream.Scenes[NextScene]));
+
+            NextScene++;
+        }
+
+        /// <summary>
+        /// Add an active fragment and place the fragment after all other fragments
+        /// </summary>
+        /// <remarks>
+        /// Intended to be called by <c>SceneStreamer</c>
+        /// </remarks>
+        /// <param name="fragment">an new active fragment</param>
+        internal void AddActive(SceneFragment fragment)
+        {
+            float maxX = float.MinValue;
+            SceneFragment? fragmentWithMaxX = null;
+
+            foreach (SceneFragment existingFragment in _activeFragments)
+            {
+                float x = existingFragment.transform.position.x;
+
+                if (x > maxX)
+                {
+                    maxX = x;
+                    fragmentWithMaxX = existingFragment;
+                }
+            }
+
+            if (fragmentWithMaxX != null)
+            {
+                float offsetX = fragmentWithMaxX.Size.x / 2.0f + fragment.Size.x / 2.0f + maxX;
+                ShiftX(fragment, offsetX);
+            }
+
+            _activeFragments.Enqueue(fragment);
+        }
+
+        /// <summary>
+        /// Add an active scene that contains the last added fragment.
+        /// </summary>
+        /// <remarks>
+        /// Intended to be called by <c>SceneFragment</c>
+        /// </remarks>
+        /// <param name="fragmentScene">the scene of the fragment</param>
+        internal void AddActive(string fragmentScene)
+        {
+            _activeFragmentScenes.Enqueue(fragmentScene);
+        }
+
+        /// <summary>
+        /// Shift a fragment and its roots by an offset along x-axis
+        /// </summary>
+        /// <param name="fragment">the fragment to shift</param>
+        /// <param name="offsetX">how much to shift</param>
+        private void ShiftX(SceneFragment fragment, float offsetX)
+        {
+            var offset = new Vector3(offsetX, 0.0f);
+
+            fragment.transform.Translate(offset);
+
+            if (fragment.Roots != null)
+            {
+                for (int i = 0; i < fragment.Roots.Length; i++)
+                {
+                    fragment.Roots[i].Translate(offset);
+                }
+            }
+        }
+
+        #endregion
 
         /// <summary>
         /// Remove the first invisible fragment in <c>SceneStream.ActiveFragments</c>
@@ -68,25 +172,27 @@ namespace FlappyBird.Streaming
                 return false;
             }
 
-            if (SceneStream.ActiveFragments.Count <= 0)
+            if (_activeFragments.Count <= 0)
             {
                 return false;
             }
 
             Debug.AssertFormat(
-                SceneStream.ActiveFragmentScenes.Count == SceneStream.ActiveFragments.Count,
+                _activeFragmentScenes.Count == _activeFragments.Count,
                 "ActiveScenes.Count = {0}, ActiveFragments.Count = {1}",
-                SceneStream.ActiveFragmentScenes.Count,
-                SceneStream.ActiveFragments.Count);
+                _activeFragmentScenes.Count,
+                _activeFragments.Count);
 
-            SceneFragment fragment = SceneStream.ActiveFragments.Peek();
+            SceneFragment fragment = _activeFragments.Peek();
             Rect fragmentRect = fragment.Rect;
             Rect viewRect = SceneStream.ViewSize;
 
+            //Debug.LogFormat("Peeking {0}", fragment.gameObject.scene.name);
+
             if (!viewRect.Overlaps(fragmentRect))
             {
-                string fragmentScene = SceneStream.ActiveFragmentScenes.Dequeue();
-                SceneStream.ActiveFragments.Dequeue();
+                string fragmentScene = _activeFragmentScenes.Dequeue();
+                _activeFragments.Dequeue();
 
                 SceneManager.UnloadSceneAsync(fragmentScene);
 
@@ -97,23 +203,26 @@ namespace FlappyBird.Streaming
         }
 
         /// <summary>
-        /// Load the next scene and increments <c>NextScene</c>
+        /// Find a scene fragment in roots of a scene
         /// </summary>
-        private void LoadNextScene()
+        /// <remarks>
+        /// Note that this method does not search beyond roots
+        /// </remarks>
+        /// <param name="roots">the roots of a scene</param>
+        /// <returns></returns>
+        private SceneFragment? FindFragment(GameObject[] roots)
         {
-            if (SceneStream == null || SceneStream.Scenes == null)
+            for (int i = 0; i < roots.Length; i++)
             {
-                return;
+                var result = roots[i].GetComponent<SceneFragment>();
+
+                if (result != null)
+                {
+                    return result;
+                }
             }
 
-            if (NextScene >= SceneStream.Scenes.Length)
-            {
-                return;
-            }
-
-            LoadScene(SceneStream.Scenes[NextScene]);
-
-            NextScene++;
+            return null;
         }
     }
 }
