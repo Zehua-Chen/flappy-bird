@@ -1,7 +1,19 @@
 {
   "dependencies": {
+    "com.flappybird.death": {
+      "version": "file:com.flappybird.death",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
+    },
     "com.flappybird.movement": {
       "version": "file:com.flappybird.movement",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
+    },
+    "com.flappybird.score": {
+      "version": "file:com.flappybird.score",
       "depth": 0,
       "source": "embedded",
       "dependencies": {}
@@ -52,6 +64,13 @@
     },
     "com.unity.ide.vscode": {
       "version": "1.2.3",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.inputsystem": {
+      "version": "1.0.1",
       "depth": 0,
       "source": "registry",
       "dependencies": {},

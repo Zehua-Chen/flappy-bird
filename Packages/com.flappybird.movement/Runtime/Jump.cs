@@ -2,7 +2,7 @@
 
 namespace FlappyBird.Movement
 {
-    public class Jump : MonoBehaviour
+    public sealed class Jump : MonoBehaviour
     {
         public Rigidbody2D Rigidbody2D = null;
         public float Force = 2.0f;
@@ -10,7 +10,7 @@ namespace FlappyBird.Movement
         public void Perform()
         {
             var force = new Vector2(0.0f, this.Force);
-            Rigidbody2D.AddForce(force, ForceMode2D.Impulse);
+            Rigidbody2D.velocity = force;
         }
     }
 }

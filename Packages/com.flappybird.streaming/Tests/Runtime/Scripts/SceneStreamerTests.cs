@@ -21,7 +21,11 @@ public sealed class SceneStreamerTests
     [UnityTearDown]
     public IEnumerator TearDown()
     {
-        yield return SceneManager.UnloadSceneAsync("Root");
+        for (int i = 1; i < SceneManager.sceneCount; i++)
+        {
+            Scene scene = SceneManager.GetSceneAt(i);
+            yield return SceneManager.UnloadSceneAsync(scene.name);
+        }   
     }
 
     /// <summary>
