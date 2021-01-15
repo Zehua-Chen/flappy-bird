@@ -15,6 +15,7 @@ MonoBehaviour:
   Scenes:
   - Map_Default_1
   - Map_Default_2
+  - Map_Default_3
   View:
     serializedVersion: 2
     x: 0
