@@ -44,8 +44,6 @@ namespace FlappyBird.Death
                 Rigidbody2D.velocity = force;
 
                 CollidedWithWorld.Invoke();
-
-                Destroy(Collider2D);
                 StartCoroutine(SelfDestroy());
             }
         }
