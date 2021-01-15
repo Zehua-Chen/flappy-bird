@@ -50,6 +50,21 @@ namespace FlappyBird.Streaming
             Gizmos.DrawWireCube(SceneStream.View.position, SceneStream.View.size);
         }
 
+        #region Stop
+
+        /// <summary>
+        /// Stop streaming and the movement of all scene fragments
+        /// </summary>
+        public void Stop()
+        {
+            foreach (SceneFragment fragment in _activeFragments)
+            {
+                fragment.enabled = false;
+            }
+        }
+
+        #endregion
+
         #region Scene Loading
 
         /// <summary>

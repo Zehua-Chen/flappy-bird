@@ -2,6 +2,7 @@
 
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace FlappyBird.Death
 {
@@ -14,6 +15,16 @@ namespace FlappyBird.Death
 
         public Rigidbody2D? Rigidbody2D = default;
         public Collider2D? Collider2D = default;
+
+        /// <summary>
+        /// Invoked upon colliding with the world. But before self destruction
+        /// </summary>
+        public UnityEvent CollidedWithWorld = new UnityEvent();
+
+        /// <summary>
+        /// Invoked after self destruction
+        /// </summary>
+        public UnityEvent Killed = new UnityEvent();
 
         private void OnCollisionEnter2D(Collision2D collision)
         { 
@@ -32,6 +43,8 @@ namespace FlappyBird.Death
                 var force = new Vector2(0.0f, JumpForce);
                 Rigidbody2D.velocity = force;
 
+                CollidedWithWorld.Invoke();
+
                 Destroy(Collider2D);
                 StartCoroutine(SelfDestroy());
             }
@@ -41,6 +54,8 @@ namespace FlappyBird.Death
         {
             yield return new WaitForSeconds(WaitBeforeDestroy);
             Destroy(gameObject);
+
+            Killed.Invoke();
         }
     }
 }
