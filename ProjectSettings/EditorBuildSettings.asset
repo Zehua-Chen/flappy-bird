@@ -4,5 +4,14 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/FlappyBird/Scenes/Map_Default/Map_Default_0.unity
+    guid: 2cf1cba32fc0e4ce180a51f47276006e
+  - enabled: 1
+    path: Assets/FlappyBird/Scenes/Map_Default/Map_Default_1.unity
+    guid: 4c1500a829ae248e0b456e6f4aef1181
+  - enabled: 1
+    path: Assets/FlappyBird/Scenes/Map_Default/Map_Default_2.unity
+    guid: a37d5ff61a35f4931822759b69f6b46c
   m_configObjects: {}

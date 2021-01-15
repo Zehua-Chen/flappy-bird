@@ -19,6 +19,11 @@ namespace FlappyBird.Streaming
         {
             if (SceneStream != null && SceneStream.Scenes != null)
             {
+                if (SceneStream.View.height <= 0.0f || SceneStream.View.width <= 0.0f)
+                {
+                    Debug.LogWarning("SceneStream's View should have height or width be positive");
+                }
+
                 for (int i = 0; i < BufferSize && i < SceneStream.Scenes.Length; i++)
                 {
                     yield return StartCoroutine(LoadNextScene());

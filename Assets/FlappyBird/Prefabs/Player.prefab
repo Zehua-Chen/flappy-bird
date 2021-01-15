@@ -223,7 +223,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Tag: World
-  JumpForce: 2
+  JumpForce: 5
   WaitBeforeDestroy: 1.5
   Rigidbody2D: {fileID: 1802058331543459274}
   Collider2D: {fileID: 1802058331543459275}

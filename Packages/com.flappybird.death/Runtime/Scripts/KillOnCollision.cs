@@ -16,9 +16,7 @@ namespace FlappyBird.Death
         public Collider2D? Collider2D = default;
 
         private void OnCollisionEnter2D(Collision2D collision)
-        {
-            Debug.Log("On collision enter");
-
+        { 
             if (Rigidbody2D == null)
             {
                 return;
